@@ -1,5 +1,5 @@
 import { computeAddress } from '@ethersproject/transactions';
-import { SubgraphResponse } from './types';
+import { SubgraphResponse } from './schema';
 
 /**
  * Trigger both types of notifications.
@@ -44,19 +44,17 @@ export function getRelativeDay(expiration: number) {
  * @param address - ETH address to lookup.
  */
 export async function getOwnedEnsNames(address: string) {
-  const fourtyFiveDaysFromNow =
-    Math.floor(Date.now() / 1000) + 45 * 24 * 60 * 60;
+  const timeLeft = Math.floor(Date.now() / 1000) + 1000 * 24 * 60 * 60;
 
   // mainnet subgraph is https://api.thegraph.com/subgraphs/name/ensdomains/ens
-  const endpoint =
-    'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli';
-
+  // goerli subgraph is https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli
+  const endpoint = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens';
   const query = `
     {
       domains(where: {
         owner: "${address.toLowerCase()}"
         registration_: {
-          expiryDate_lte: ${fourtyFiveDaysFromNow}
+          expiryDate_lte: ${timeLeft}
         }
       }) {
         name

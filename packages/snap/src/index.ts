@@ -5,7 +5,7 @@ import {
   getOwnedEnsNames,
   getRelativeDay,
   notify,
-} from './helpers';
+} from './ensExpiry';
 
 export const onCronjob: OnCronjobHandler = async ({ request }) => {
   switch (request.method) {
