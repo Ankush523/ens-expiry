@@ -44,17 +44,16 @@ export function getRelativeDay(expiration: number) {
  * @param address - ETH address to lookup.
  */
 export async function getOwnedEnsNames(address: string) {
-  const timeLeft = Math.floor(Date.now() / 1000) + 1000 * 24 * 60 * 60;
+  const expiryTime = Math.floor(Date.now() / 1000) + 45 * 24 * 60 * 60;
 
-  // mainnet subgraph is https://api.thegraph.com/subgraphs/name/ensdomains/ens
-  // goerli subgraph is https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli
   const endpoint = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens';
+
   const query = `
     {
       domains(where: {
         owner: "${address.toLowerCase()}"
         registration_: {
-          expiryDate_lte: ${timeLeft}
+          expiryDate_lte: ${expiryTime}
         }
       }) {
         name
@@ -74,8 +73,10 @@ export async function getOwnedEnsNames(address: string) {
   });
 
   const json = (await response.json()) as SubgraphResponse;
+  console.log(json);
   return json.data.domains.map((domain) => {
     const timestampStr = domain.registration.expiryDate;
+    console.log(timestampStr);
 
     return {
       name: domain.name,

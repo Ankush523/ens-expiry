@@ -10,9 +10,11 @@ import {
 export const onCronjob: OnCronjobHandler = async ({ request }) => {
   switch (request.method) {
     case 'ensExpiration': {
+      console.log('ensExpiration');
       const address = await getAddress();
+      console.log(address);
       const ownedEnsNames = await getOwnedEnsNames(address);
-
+      console.log(ownedEnsNames);
       for (const ownedName of ownedEnsNames) {
         const { name, expiration } = ownedName;
 
@@ -37,5 +39,3 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
       throw new Error('Method not found.');
   }
 };
-
-// TODO: use `wallet_invokeSnap` with `snap_manageState` to manage the names you want reminders for https://docs.metamask.io/snaps/reference/rpc-api#wallet_invokesnap

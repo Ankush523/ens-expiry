@@ -59,7 +59,7 @@ export default function Index() {
 
   return (
     <main>
-      <StyledHeading as="h1">ENS Expiry Notice</StyledHeading>
+      <StyledHeading as="h1">ENS Expiry Snap</StyledHeading>
 
       {state.error && (
         <Helper type="error">
@@ -80,10 +80,6 @@ export default function Index() {
 
       {shouldDisplayReconnectButton(state.installedSnap) && (
         <div className="row">
-          <Typography style={{ textAlign: 'center' }}>
-            While connected to a local running snap this button will always be
-            displayed in order to update the snap if a change is made.
-          </Typography>
           <StyledButton
             onClick={handleConnectClick}
             disabled={!state.installedSnap}
