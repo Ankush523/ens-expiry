@@ -38,43 +38,31 @@ export function getRelativeDay(expiration: number) {
   return `${dayDiff} days`;
 }
 
+// eslint-disable-next-line jsdoc/require-description
 /**
- * Get the ENS names owned by the connected account.
  *
- * @param address - ETH address to lookup.
  */
-export async function getOwnedEnsNames(address: string) {
-  const expiryTime = Math.floor(Date.now() / 1000) + 45 * 24 * 60 * 60;
+export async function getOwnedEnsNames() {
+  const expiryTime = Math.floor(Date.now() / 1000) + 1000 * 24 * 60 * 60;
 
-  const endpoint = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens';
-
-  const query = `
+  // mainnet subgraph is https://api.thegraph.com/subgraphs/name/ensdomains/ens
+  const response = await fetch(
+    'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
     {
-      domains(where: {
-        owner: "${address.toLowerCase()}"
-        registration_: {
-          expiryDate_lte: ${expiryTime}
-        }
-      }) {
-        name
-        registration {
-          expiryDate
-        }
-      }
-    }
-  `;
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `{domains(where:{owner:"${'0xCF1E6Ab1949D0573362f5278FAbCa4Ec74BE913C'.toLowerCase()}"registration_:{expiryDate_lte: ${expiryTime}}}){name registration {expiryDate}}}`,
+      }),
     },
-    body: JSON.stringify({ query }),
-  });
+  );
+  // const json: any = await response.json();
+  // console.log(json.data.domains.map((domain: any) => domain.name));
 
   const json = (await response.json()) as SubgraphResponse;
-  console.log(json);
-  return json.data.domains.map((domain) => {
+  return json.data.domains.map((domain: any) => {
     const timestampStr = domain.registration.expiryDate;
     console.log(timestampStr);
 

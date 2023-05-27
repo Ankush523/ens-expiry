@@ -2,18 +2,18 @@ import { OnCronjobHandler } from '@metamask/snaps-types';
 
 import {
   getAddress,
-  getOwnedEnsNames,
   getRelativeDay,
   notify,
+  getOwnedEnsNames,
 } from './ensExpiry';
 
 export const onCronjob: OnCronjobHandler = async ({ request }) => {
   switch (request.method) {
     case 'ensExpiration': {
-      console.log('ensExpiration');
-      const address = await getAddress();
-      console.log(address);
-      const ownedEnsNames = await getOwnedEnsNames(address);
+      let userAddress: any = await getAddress();
+      userAddress = userAddress.toLowerCase();
+      console.log(userAddress);
+      const ownedEnsNames = await getOwnedEnsNames();
       console.log(ownedEnsNames);
       for (const ownedName of ownedEnsNames) {
         const { name, expiration } = ownedName;
